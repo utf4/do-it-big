@@ -33,7 +33,7 @@ services:
       - JWT_REFRESH_SECRET
     ports:
       - 3000:3000
-    command: sh -c "npm run migration:run && npm run start:dev"
+    command: sh -c "npm run migration:run && sleep 5 && npm run start:dev"
     depends_on:
       - db
       - localstack
