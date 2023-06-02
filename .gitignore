@@ -1,0 +1,5 @@
+volume
+.DS_STORE
+db_data
+.env
+package-lock.json

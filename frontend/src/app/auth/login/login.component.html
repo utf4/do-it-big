@@ -1,0 +1,45 @@
+<div class="form-container form">
+  <h2 mat-dialog-title>Login</h2>
+  <mat-dialog-content>
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <form [formGroup]="form">
+      <mat-form-field class="input-field" appearance="standard">
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="Enter email" formControlName="email" />
+        <mat-error *ngIf="form.controls['email'].hasError('required')">
+         Email is required
+        </mat-error>
+        <mat-error *ngIf="form.controls['email'].hasError('email')">
+          Please Enter valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field class="input-field" appearance="standard">
+        <mat-label>Password</mat-label>
+        <input
+          type="password"
+          matInput
+          placeholder="Password"
+          formControlName="password"
+        />
+        <mat-error *ngIf="form.controls['password'].hasError('required')">
+          Password is required
+        </mat-error>
+       
+      </mat-form-field>
+      <br />
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button
+      color="primary"
+      mat-flat-button
+      [disabled]="!form.valid"
+      (click)="submit()"
+    >
+      Submit
+    </button>
+  </mat-dialog-actions>
+</div>

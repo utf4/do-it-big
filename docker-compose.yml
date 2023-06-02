@@ -1,0 +1,60 @@
+version: "3"
+services:
+  db:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  backend:
+    container_name: backend
+    tty: true
+    stdin_open: true
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - LOCAL_STACK_URL
+      - AWS_REGION
+      - AWS_SECRET_KEY
+      - AWS_ACCESS_KEY
+      - JWT_ACCESS_SECRET
+      - JWT_REFRESH_SECRET
+    ports:
+      - 3000:3000
+    command: sh -c "npm run migration:run && npm run start:dev"
+    depends_on:
+      - db
+      - localstack
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566" # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # external services port range
+    environment:
+      - DEBUG=${DEBUG-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  frontend:
+    container_name: frontend
+    tty: true
+    stdin_open: true
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 4200:4200

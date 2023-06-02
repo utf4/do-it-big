@@ -1,0 +1,49 @@
+<div *ngIf="email" class="container email">
+  <h2>Subject:</h2>
+  {{ email.subject }}
+  <h2>Email:</h2>
+  <span rows="7" cols="120">
+    {{ email.body }}
+  </span>
+  <br />
+
+  <div>
+    <form *ngIf="!email.emailReply" class="reply" [formGroup]="form">
+      <textarea
+        placeholder="Write your email here...."
+        class="mt-5"
+        rows="7"
+        cols="120"
+        type="textarea"
+        formControlName="body"
+      ></textarea>
+      <br />
+      <mat-error
+        *ngIf="
+          form.controls['body'].touched &&
+          form.controls['body'].hasError('required')
+        "
+      >
+        Reply body is required
+      </mat-error>
+      <p class="error" *ngIf="error">{{ error }}</p>
+      <br />
+      <button
+        type="submit"
+        [disabled]="!form.valid"
+        (click)="submit()"
+        color="primary"
+        mat-flat-button
+      >
+        Reply
+      </button>
+    </form>
+    <p  class="success" *ngIf="success">Reply sent successfully</p>
+    <div *ngIf="email.emailReply">
+      <h2>Reply:</h2>
+      <span rows="7" cols="120">
+        {{ email.emailReply.body }}
+      </span>
+    </div>
+  </div>
+</div>
